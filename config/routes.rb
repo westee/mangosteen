@@ -5,4 +5,13 @@ Rails.application.routes.draw do
   # root "articles#index"
   post '/users', to: 'users#create'
   get '/users/:id', to: 'users#show'
+  namespace :api do
+    namespace :v1 do
+      resources :validation_codes, only: [:create]
+      resources :session, only: [:create, :destroy]
+      resources :me, only: [:show]
+      resources :items
+      resources :tags
+    end
+  end
 end
