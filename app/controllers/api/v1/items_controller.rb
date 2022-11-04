@@ -3,17 +3,17 @@ class Api::V1::ItemsController < ApplicationController
         items = Item.page params[:page]
         count = Item.count
         render json: {
-            resource: items,
+            resources: items,
             count: count
         }
     end
 
     def create 
-        item = Item.new amount:1, notes: 'test'
+        item = Item.new amount: params[:amount], notes: params[:note]
         if item.save
-            render json: {resource: item}
+            render json: {resources: item}
         else
-            render json: {resource: 'err'}
+            render json: {resources: item.errors}
         end
     end
 end
