@@ -26,7 +26,6 @@ RSpec.describe "Items", type: :request do
       }.to change {Item.count}.by 1
       expect(response).to have_http_status(200)
       json = JSON.parse(response.body)
-      p json
       expect(json['resources']['id']).to be_kind_of(Numeric)
       expect(json['resources']['amount']).to eq(97)
       
