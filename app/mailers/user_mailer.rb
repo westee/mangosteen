@@ -1,9 +1,9 @@
 class UserMailer < ApplicationMailer
-    # default from: 'notifications@example.com'
+  # default from: 'notifications@example.com'
 
-    def welcome_email(code)
-       
-        @code= code
-        mail(to: "wangxudongaita@qq.com", subject: 'Welcome to My Awesome Site')
-      end
+  def welcome_email(email)
+    validationCode = ValidationCode.find_by_email(email)
+    @code = validationCode.code
+    mail(to: email, subject: "山竹记账验证码")
+  end
 end
