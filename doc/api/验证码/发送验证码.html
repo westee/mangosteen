@@ -112,20 +112,42 @@ table th, table td {
         <h2>发送验证码</h2>
         <h3>POST /api/v1/validation_codes</h3>
 
+          <h3>Parameters</h3>
+          <table class="parameters table table-striped table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                    <span class="name">email</span>
+                </td>
+                <td>
+                  <span class="description">邮件接收方email</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
 
           <h3>Request</h3>
 
             <h4>Headers</h4>
             <pre class="request headers">Version: HTTP/1.0
+Accept: application/json
+Content-Type: application/json
 Host: example.org
-Content-Type: application/x-www-form-urlencoded
 Cookie: </pre>
 
           <h4>Route</h4>
           <pre class="request route highlight">POST /api/v1/validation_codes</pre>
 
 
+            <h4>Body</h4>
+            <pre class="request body">{"email":"email@example.com"}</pre>
 
 
             <h3>Response</h3>
@@ -136,13 +158,19 @@ X-Content-Type-Options: nosniff
 X-Download-Options: noopen
 X-Permitted-Cross-Domain-Policies: none
 Referrer-Policy: strict-origin-when-cross-origin
-Content-Type: text/html
-Cache-Control: no-cache
-X-Request-Id: f07e3fde-a542-4ff2-8abb-f9c0b0c7f788
-X-Runtime: 0.021141
-Content-Length: 0</pre>
+Content-Type: application/json; charset=utf-8
+Vary: Accept
+ETag: W/&quot;73d09d66d2ff6ddc77cef3ceb03ecce8&quot;
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: ec528242-6619-4fdc-851b-40554efd098a
+X-Runtime: 0.020322
+Content-Length: 17</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
+              <h4>Body</h4>
+              <pre class="response body">{
+  &quot;code&quot;: &quot;483734&quot;
+}</pre>
       </div>
     </div>
   </body>
