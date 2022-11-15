@@ -1,10 +1,13 @@
                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
+                              home_index GET    /home/index(.:format)                                                                             home#index
+                                         GET    /                                                                                                 home#index
+                 validation_codes_create GET    /validation_codes/create(.:format)                                                                validation_codes#create
                                    users POST   /users(.:format)                                                                                  users#create
                                          GET    /users/:id(.:format)                                                                              users#show
                  api_v1_validation_codes POST   /api/v1/validation_codes(.:format)                                                                api/v1/validation_codes#create
-                    api_v1_session_index POST   /api/v1/session(.:format)                                                                         api/v1/session#create
-                          api_v1_session DELETE /api/v1/session/:id(.:format)                                                                     api/v1/session#destroy
-                               api_v1_me GET    /api/v1/me/:id(.:format)                                                                          api/v1/me#show
+                          api_v1_session DELETE /api/v1/session(.:format)                                                                         api/v1/sessions#destroy
+                                         POST   /api/v1/session(.:format)                                                                         api/v1/sessions#create
+                               api_v1_me GET    /api/v1/me(.:format)                                                                              api/v1/mes#show
                             api_v1_items GET    /api/v1/items(.:format)                                                                           api/v1/items#index
                                          POST   /api/v1/items(.:format)                                                                           api/v1/items#create
                              api_v1_item GET    /api/v1/items/:id(.:format)                                                                       api/v1/items#show
