@@ -8,7 +8,7 @@ RSpec.describe "me", type: :request do
       json = JSON.parse response.body
       jwt = json['jwt']
     
-      get '/api/v1/me', headers: {'Authorization': "Bearer #{jwt}"}
+      get '/api/v1/me', headers: user.generate_auth_header
       expect(response).to have_http_status(200)
       json = JSON.parse response.body
       
