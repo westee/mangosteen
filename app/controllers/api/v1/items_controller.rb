@@ -1,6 +1,6 @@
 class Api::V1::ItemsController < ApplicationController
     def index
-        items = Item.page params[:page]
+        items = Item.where({created_at: params[:create_after]..params[:create_before]}).page params[:page]
         count = Item.count
         render json: {
             resources: items,
