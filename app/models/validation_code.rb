@@ -1,6 +1,7 @@
 class ValidationCode < ApplicationRecord
   validates :email, presence: true
-
+  validates :code, uniqueness: true 
+  
 	before_create :generate_code
 	after_create :send_email
 
