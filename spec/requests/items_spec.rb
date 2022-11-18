@@ -71,15 +71,39 @@ RSpec.describe "Items", type: :request do
     end
   end
 
-  describe "POST /items" do
-    xit "works! (now write some real specs)" do
-      expect {
-        post '/api/v1/items', params: {amount: 97}
-      }.to change {Item.count}.by 1
+  describe "创建账目" do
+    it "未登录创建" do
+      post '/api/v1/items', params: {amount: 97}
+      expect(response).to have_http_status(401)
+    end
+    
+    it "登录后创建" do
+      user = User.create email: 'xxx@qq.com'
+      tag1 = Tag.create name: 'tag1', sign: 'x', user_id: user.id
+      tag2 = Tag.create name: 'tag2', sign: 'x', user_id: user.id
+
+      post '/api/v1/items', params: {amount: 97, tags_id: [tag1.id, tag2.id], happened_at: '2018-01-01T00:00:00+08:00' }, headers: user.generate_auth_header
+     
       expect(response).to have_http_status(200)
       json = JSON.parse(response.body)
-      expect(json['resources']['id']).to be_kind_of(Numeric)
-      expect(json['resources']['amount']).to eq(97)
+      expect(json['resource']['id']).to be_an(Numeric)
+      expect(json['resource']['amount']).to eq(97)
+      expect(json['resource']['tags_id']).to eq([tag1.id, tag2.id])
+      expect(json['resource']['happened_at']).to eq('2017-12-31T16:00:00.000Z')
+    end
+
+    it "创建时 amount、tags_id、happen_at 必填" do
+      user = User.create email: 'xxx@qq.com'
+      tag1 = Tag.create name: 'tag1', sign: 'x', user_id: user.id
+      tag2 = Tag.create name: 'tag2', sign: 'x', user_id: user.id
+
+      post '/api/v1/items', headers: user.generate_auth_header
+      expect(response).to have_http_status(422)
+      json = JSON.parse(response.body)
+
+      expect(json['errors']['amount'][0]).to eq "can't be blank"
+      expect(json['errors']['tags_id'][0]).to eq "can't be blank"
+      expect(json['errors']['happened_at'][0]).to eq "can't be blank"
     end
   end
 end
