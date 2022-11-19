@@ -1,6 +1,6 @@
 class ValidationCode < ApplicationRecord
   validates :email, presence: true
-  validates :code, uniqueness: true 
+  # validates :code, uniqueness: true 
   
 	before_create :generate_code
 	after_create :send_email
@@ -12,6 +12,6 @@ class ValidationCode < ApplicationRecord
   end
 
 	def send_email
-    UserMailer.welcome_email(self.email)
+    UserMailer.welcome_email(self.email).deliver
   end
 end
