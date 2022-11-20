@@ -38,5 +38,6 @@ module Mangosteen1
     config.api_only = true
 
     config.middleware.use AutoJwt
+    config.i18n.default_locale = 'zh-CN'
   end
 end
