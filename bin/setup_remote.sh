@@ -1,6 +1,7 @@
 user=mangosteen
 root=/home/$user/deploys/$version
 container_name=mangosteen-prod-1
+nginx_container_name=mangosteen-nginx-1
 db_container_name=db-for-mangosteen
 
 function set_env {
@@ -67,5 +68,22 @@ case $ans in
     n|N|2  )  echo "no" ;;
     ""     )  echo "no" ;;
 esac
+
+if [ "$(docker ps -aq -f name=^${nginx_container_name}$)" ]; then
+  title 'doc: docker rm'
+  docker rm -f $nginx_container_name
+fi
+
+title 'doc: docker run'
+cd /home/$user/deploys/$version
+mkdir ./dist
+tar xf dist.tar.gz --directory=./dist
+cd -
+docker run -d -p 3002:80 \
+           --network=network1 \
+           --name=$nginx_container_name \
+           -v /home/$user/deploys/$version/nginx.default.conf:/etc/nginx/conf.d/default.conf \
+           -v /home/$user/deploys/$version/dist:/usr/share/nginx/html \
+           nginx:latest
 
 title '全部执行完毕'

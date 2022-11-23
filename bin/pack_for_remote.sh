@@ -2,6 +2,8 @@
 user=mangosteen
 ip=$1
 
+frontend_dir=$cache_dir/frontend
+
 time=$(date +'%Y%m%d-%H%M%S')
 cache_dir=tmp/deploy_cache
 dist=$cache_dir/mangosteen-$time.tar.gz
@@ -19,6 +21,13 @@ function title {
   echo 
 }
 
+title '打包前端代码'
+mkdir -p $frontend_dir
+rm -rf $frontend_dir/repo
+git clone https://gitee.com/dflk/shanzhu-station.git $frontend_dir/repo
+cd $frontend_dir/repo && pnpm install && pnpm run build; cd -
+tar -cz -f "$frontend_dir/dist.tar.gz" -C "$frontend_dir/repo/dist" .
+
 
 title '打包源代码为压缩文件'
 mkdir $cache_dir
@@ -32,8 +41,12 @@ yes | rm $dist
 scp $gemfile $user@$ip:$deploy_dir/
 scp $gemfile_lock $user@$ip:$deploy_dir/
 scp -r $vendor_cache_dir $user@$ip:$deploy_dir/vendor/
+title '上传前端代码'
+scp "$frontend_dir/dist.tar.gz" $user@$ip:$deploy_dir/
+yes | rm -rf $frontend_dir
 title '上传 Dockerfile'
 scp $current_dir/../config/host.Dockerfile $user@$ip:$deploy_dir/Dockerfile
+scp $current_dir/../config/nginx.default.conf $user@$ip:$deploy_dir/
 title '上传 setup 脚本'
 scp $current_dir/setup_remote.sh $user@$ip:$deploy_dir/
 title '上传版本号'

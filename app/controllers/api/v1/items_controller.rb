@@ -9,7 +9,7 @@ class Api::V1::ItemsController < ApplicationController
     render json: {
              resources: items,
              pager: {
-               count: Item.count,
+               count: items.count,
                page: params[:page] || 1,
                per_page: Item.default_per_page,
              },
@@ -18,11 +18,13 @@ class Api::V1::ItemsController < ApplicationController
 
   def create
     item = Item.new params.permit(:amount, :happened_at ,tags_id: [])  
+    p '-------------current_user_id----------'
+    p request.env['current_user_id']
     item.user_id = request.env['current_user_id']
     if item.save
       render json: { resource: item }, status: :ok
     else
-      render json: { errors: item.errors }, status: 422
+      render json: { errors: item.errors, uid: request.env['current_user_id'] }, status: 422
     end
   end
 end
