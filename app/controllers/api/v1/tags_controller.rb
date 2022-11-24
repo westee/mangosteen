@@ -4,6 +4,7 @@ class Api::V1::TagsController < ApplicationController
     return head :unauthorized if current_user_id.nil?
 
     tags = Tag.where({ user_id: current_user_id }).page params[:page]
+    tags = tags.where(kind: params[:kind]) unless params[:kind].nil?
     render json: {
              resources: tags,
              pager: {
