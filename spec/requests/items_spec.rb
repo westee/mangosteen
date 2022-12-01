@@ -82,17 +82,17 @@ RSpec.describe "Items", type: :request do
       tag1 = Tag.create name: 'tag1', sign: 'x', user_id: user.id
       tag2 = Tag.create name: 'tag2', sign: 'x', user_id: user.id
 
-      post '/api/v1/items', params: {amount: 97, tags_id: [tag1.id, tag2.id], happened_at: '2018-01-01T00:00:00+08:00' }, headers: user.generate_auth_header
+      post '/api/v1/items', params: {amount: 97, tag_ids: [tag1.id, tag2.id], happened_at: '2018-01-01T00:00:00+08:00' }, headers: user.generate_auth_header
      
       expect(response).to have_http_status(200)
       json = JSON.parse(response.body)
       expect(json['resource']['id']).to be_an(Numeric)
       expect(json['resource']['amount']).to eq(97)
-      expect(json['resource']['tags_id']).to eq([tag1.id, tag2.id])
+      expect(json['resource']['tag_ids']).to eq([tag1.id, tag2.id])
       expect(json['resource']['happened_at']).to eq('2017-12-31T16:00:00.000Z')
     end
 
-    it "创建时 amount、tags_id、happen_at 必填" do
+    it "创建时 amount、tag_ids、happened_at 必填" do
       user = User.create email: 'xxx@qq.com'
       tag1 = Tag.create name: 'tag1', sign: 'x', user_id: user.id
       tag2 = Tag.create name: 'tag2', sign: 'x', user_id: user.id
@@ -102,7 +102,7 @@ RSpec.describe "Items", type: :request do
       json = JSON.parse(response.body)
 
       expect(json['errors']['amount'][0]).to eq "can't be blank"
-      expect(json['errors']['tags_id'][0]).to eq "can't be blank"
+      expect(json['errors']['tag_ids'][0]).to eq "can't be blank"
       expect(json['errors']['happened_at'][0]).to eq "can't be blank"
     end
   end

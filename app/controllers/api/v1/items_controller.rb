@@ -17,7 +17,7 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    item = Item.new params.permit(:amount, :happened_at ,tags_id: [])  
+    item = Item.new params.permit(:amount, :happened_at ,tag_ids: [])  
     p '-------------current_user_id----------'
     p request.env['current_user_id']
     item.user_id = request.env['current_user_id']
@@ -32,7 +32,7 @@ class Api::V1::ItemsController < ApplicationController
     current_user_id = request.env["current_user_id"]
     return head :unauthorized if current_user_id.nil?
     items = Item.where({ user_id: current_user_id })
-      .where({ happen_at: params[:happen_after]..params[:happen_before] })
+      .where({ happened_at: params[:happened_after]..params[:happened_before] })
     income_items = []
     expenses_items = []
     items.each {|item|
@@ -52,10 +52,10 @@ class Api::V1::ItemsController < ApplicationController
     items = Item
       .where(user_id: request.env["current_user_id"])
       .where(kind: params[:kind])
-      .where(happen_at: params[:happened_after]..params[:happened_before])
+      .where(happened_at: params[:happened_after]..params[:happened_before])
     items.each do |item|
-      if params[:group_by] == "happen_at"
-        key = item.happen_at.in_time_zone("Beijing").strftime("%F")
+      if params[:group_by] == "happened_at"
+        key = item.happened_at.in_time_zone("Beijing").strftime("%F")
         hash[key] ||= 0
         hash[key] += item.amount
       else
@@ -68,8 +68,8 @@ class Api::V1::ItemsController < ApplicationController
     end
     groups = hash
       .map { |key, value| { "#{params[:group_by]}": key, amount: value } }
-    if params[:group_by] == "happen_at"
-      groups.sort! { |a, b| a[:happen_at] <=> b[:happen_at] }
+    if params[:group_by] == "happened_at"
+      groups.sort! { |a, b| a[:happened_at] <=> b[:happened_at] }
     elsif params[:group_by] == "tag_id"
       groups.sort! { |a, b| b[:amount] <=> a[:amount] }
     end

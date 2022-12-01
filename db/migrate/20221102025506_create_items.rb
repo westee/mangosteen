@@ -4,7 +4,7 @@ class CreateItems < ActiveRecord::Migration[7.0]
       t.integer :user_id
       t.integer :amount
       t.text :notes
-      t.integer :tags_id, array: true
+      t.integer :tag_ids, array: true
       t.datetime :happened_at
 
       t.timestamps
