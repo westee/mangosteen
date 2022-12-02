@@ -4,10 +4,20 @@ class Api::V1::ItemsController < ApplicationController
     return head :unauthorized if current_user_id.nil?
 
     items = Item.where({ user_id: current_user_id })
-      .where({ created_at: params[:create_after]..params[:create_before]})
-      .page params[:page]
+      .where(happened_at: (datetime_with_zone(params[:happen_after])..datetime_with_zone(params[:happen_before])))
+
+    items = items.where(kind: params[:kind]) unless params[:kind].blank?
+    items = items.page(params[:page])
+
+    result = Array.new 
+    items.each do |item|
+      tag_name = Tag.find_by_id(item.tag_ids[0]).name
+      itemWithName = ItemWithName.new amount: item.amount, happened_at: item.happened_at, tag_ids: [123], tag_name: tag_name
+      result.push(itemWithName)
+    end
+   
     render json: {
-             resources: items,
+            resources: result,
              pager: {
                count: items.count,
                page: params[:page] || 1,
@@ -17,14 +27,14 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    item = Item.new params.permit(:amount, :happened_at ,tag_ids: [])  
-    p '-------------current_user_id----------'
-    p request.env['current_user_id']
-    item.user_id = request.env['current_user_id']
+    item = Item.new params.permit(:amount, :happened_at, tag_ids: [])
+    p "-------------current_user_id----------"
+    p request.env["current_user_id"]
+    item.user_id = request.env["current_user_id"]
     if item.save
       render json: { resource: item }, status: :ok
     else
-      render json: { errors: item.errors, uid: request.env['current_user_id'] }, status: 422
+      render json: { errors: item.errors, uid: request.env["current_user_id"] }, status: 422
     end
   end
 
@@ -35,8 +45,8 @@ class Api::V1::ItemsController < ApplicationController
       .where({ happened_at: params[:happened_after]..params[:happened_before] })
     income_items = []
     expenses_items = []
-    items.each {|item|
-      if item.kind === 'income'
+    items.each { |item|
+      if item.kind === "income"
         income_items << item
       else
         expenses_items << item

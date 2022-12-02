@@ -4,7 +4,8 @@ class Item < ApplicationRecord
   validates :amount, presence: true
   validates :happened_at, presence: true
   validates :kind, presence: true
-
+  validates :tag_name, presence: true
+  attr_accessor :tag_name
   belongs_to :user
   validate :check_tag_ids_belong_to_user
 
