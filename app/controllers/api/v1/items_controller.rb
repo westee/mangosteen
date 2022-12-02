@@ -79,8 +79,9 @@ class Api::V1::ItemsController < ApplicationController
       .map { |key, value| { "#{params[:group_by]}": key, amount: value} }
     if params[:group_by] == "tag_id"
       groups.each do |item|
-        item[:name] =  Tag.find_by_id(item[:tag_id])[:name]
-        p item
+        tag = Tag.find_by_id(item[:tag_id])
+        item[:name] =  tag[:name]
+        item[:sign] =  tag[:sign]
       end
     end
     if params[:group_by] == "happened_at"
