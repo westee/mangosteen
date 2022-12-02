@@ -31,7 +31,7 @@ class Api::V1::TagsController < ApplicationController
     # tag = Tag.new name: params[:name], sign: params[:sign], user_id: current_user_id
     # if tag.save # && (params[:name] && params[:sign])
     if (params[:name] && params[:sign]) # Tag.create name: params[:name], sign: params[:sign], user_id: current_user_id
-      tag = Tag.create name: params[:name], sign: params[:sign], user_id: current_user_id
+      tag = Tag.create name: params[:name], sign: params[:sign], user_id: current_user_id, kind: params[:kind]
       render json: { resource: tag }, status: :ok
     else
       render json: { errors: {name: ["can't be blank"], sign: ["can't be blank"]} },status: :unprocessable_entity
