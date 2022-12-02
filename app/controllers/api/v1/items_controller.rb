@@ -28,8 +28,6 @@ class Api::V1::ItemsController < ApplicationController
 
   def create
     item = Item.new params.permit(:amount, :happened_at, tag_ids: [])
-    p "-------------current_user_id----------"
-    p request.env["current_user_id"]
     item.user_id = request.env["current_user_id"]
     if item.save
       render json: { resource: item }, status: :ok
@@ -59,6 +57,7 @@ class Api::V1::ItemsController < ApplicationController
 
   def summary
     hash = Hash.new
+    arr = Array.new
     items = Item
       .where(user_id: request.env["current_user_id"])
       .where(kind: params[:kind])
@@ -77,7 +76,13 @@ class Api::V1::ItemsController < ApplicationController
       end
     end
     groups = hash
-      .map { |key, value| { "#{params[:group_by]}": key, amount: value } }
+      .map { |key, value| { "#{params[:group_by]}": key, amount: value} }
+    if params[:group_by] == "tag_id"
+      groups.each do |item|
+        item[:name] =  Tag.find_by_id(item[:tag_id])[:name]
+        p item
+      end
+    end
     if params[:group_by] == "happened_at"
       groups.sort! { |a, b| a[:happened_at] <=> b[:happened_at] }
     elsif params[:group_by] == "tag_id"
